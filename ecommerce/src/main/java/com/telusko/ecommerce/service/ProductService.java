@@ -1,17 +1,18 @@
 package com.telusko.ecommerce.service;
 
-import com.telusko.ecommerce.model.Product;
 import java.util.List;
+import com.telusko.ecommerce.model.Product;
 
 public interface ProductService {
-    Product addProduct(Product product);
+
     List<Product> getAllProducts();
+
+    // new method
+    Product getProductById(Long id);
+
+    Product saveProduct(Product product);
 
     Product updateProduct(Long id, Product product);
 
     void deleteProduct(Long id);
-
-    Product getProductById(Long id);
-
 }
-

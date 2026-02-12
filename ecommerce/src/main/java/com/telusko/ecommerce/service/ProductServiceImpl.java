@@ -1,61 +1,43 @@
 package com.telusko.ecommerce.service;
 
-import com.telusko.ecommerce.model.Product;
-import com.telusko.ecommerce.repository.ProductRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.telusko.ecommerce.model.Product;
+import com.telusko.ecommerce.repository.ProductRepository;
 
 @Service
-@Transactional
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
-
-    public ProductServiceImpl(ProductRepository repository) {
-        this.repository = repository;
-    }
-
-    @Override
-    public Product addProduct(Product product) {
-        return repository.save(product);
-    }
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<Product> getAllProducts() {
-        return repository.findAll();
+        return productRepository.findAll();
     }
 
-    // UPDATE
+    // new method
+    @Override
+    public Product getProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product Not Found"));
+    }
+
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
     @Override
     public Product updateProduct(Long id, Product product) {
-        Product existingProduct = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        existingProduct.setName(product.getName());
-        existingProduct.setDescription(product.getDescription());
-        existingProduct.setPrice(product.getPrice());
-        existingProduct.setImageUrl(product.getImageUrl());
-
-        return repository.save(existingProduct);
+        product.setId(id);
+        return productRepository.save(product);
     }
 
-    // DELETE
     @Override
     public void deleteProduct(Long id) {
-        Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        repository.delete(product);
+        productRepository.deleteById(id);
     }
-
-    @Override
-    public Product getProductById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-    }
-
 }
-
